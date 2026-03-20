@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Maths Lab Sri Lanka — Learn Maths. Play Maths. Live Maths.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1C1207;
+  --cream:#FDF6E9;
+  --cream2:#F5EDD5;
+  --green:#2D6A4F;
+  --green-light:#52B788;
+  --green-pale:#D8F3DC;
+  --red:#C1440E;
+  --red-pale:#FDEBD0;
+  --gold:#E9A319;
+  --gold-pale:#FFF3CD;
+  --blue:#1B4F8A;
+  --blue-pale:#DBEAFE;
+  --card-r:16px;
+  --font-display:'Fraunces',Georgia,serif;
+  --font-body:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--cream);color:var(--ink);overflow-x:hidden;cursor:none}
+
+/* cursor */
+#cursor{position:fixed;width:14px;height:14px;background:var(--red);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width 0.2s,height 0.2s,background 0.2s;mix-blend-mode:multiply}
+#cursor.big{width:44px;height:44px;background:var(--gold);opacity:0.6}
+
+/* nav */
+nav{position:fixed;top:0;left:0;width:100%;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:64px;background:var(--ink);border-bottom:3px solid var(--gold)}
+.nav-logo{font-family:var(--font-display);font-weight:900;font-size:1.25rem;color:var(--cream);text-decoration:none;display:flex;align-items:center;gap:10px;letter-spacing:-0.02em}
+.nav-logo-pip{width:32px;height:32px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--ink);font-weight:900;box-shadow:2px 2px 0 var(--red)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:rgba(253,246,233,0.65);text-decoration:none;font-size:0.88rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-yt{display:inline-flex;align-items:center;gap:8px;background:var(--red);color:var(--cream);padding:8px 18px;border-radius:50px;font-weight:600;font-size:0.85rem;text-decoration:none;border:2px solid transparent;transition:background 0.2s,border-color 0.2s,color 0.2s}
+.nav-yt:hover{background:transparent;border-color:var(--red);color:var(--red)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:var(--cream);border-radius:2px}
+
+/* hero */
+#hero{min-height:100vh;padding:100px 5% 60px;display:flex;align-items:center;position:relative;overflow:hidden;background:var(--ink)}
+.hero-dots{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(233,163,25,0.12) 1px,transparent 1px);background-size:36px 36px;pointer-events:none}
+.hero-inner{max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1.1fr 0.9fr;gap:60px;align-items:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--ink);padding:5px 14px;border-radius:4px;font-weight:600;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:22px}
+.hero-h1{font-family:var(--font-display);font-weight:900;font-size:clamp(3rem,6.5vw,5.4rem);color:var(--cream);line-height:1.0;letter-spacing:-0.03em;margin-bottom:24px}
+.hero-h1 em{font-style:italic;color:var(--gold)}
+.hero-h1 .hg{color:var(--green-light)}
+.hero-desc{color:rgba(253,246,233,0.7);font-size:1.05rem;line-height:1.75;max-width:520px;margin-bottom:36px}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-gold{background:var(--gold);color:var(--ink);padding:14px 30px;border-radius:6px;font-weight:700;font-size:0.95rem;text-decoration:none;border:2px solid var(--gold);transition:background 0.18s,color 0.18s;display:inline-flex;align-items:center;gap:8px}
+.btn-gold:hover{background:transparent;color:var(--gold)}
+.btn-outline{background:transparent;color:var(--cream);padding:14px 30px;border-radius:6px;font-weight:700;font-size:0.95rem;text-decoration:none;border:2px solid rgba(253,246,233,0.35);transition:border-color 0.18s;display:inline-flex;align-items:center;gap:8px}
+.btn-outline:hover{border-color:var(--cream)}
+
+/* board */
+.hero-board{position:relative;display:flex;justify-content:center}
+.board-wrap{position:relative;width:100%;max-width:420px}
+@keyframes floatA{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-14px) rotate(-4deg)}}
+@keyframes floatB{0%,100%{transform:translateY(0) rotate(5deg)}50%{transform:translateY(-18px) rotate(5deg)}}
+@keyframes floatC{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(-2deg)}}
+.fc{position:absolute;border-radius:12px;border:3px solid var(--ink);font-family:var(--font-display);font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:4px 4px 0 var(--gold);z-index:2}
+.fc1{width:88px;height:118px;background:#fff;top:-20px;left:-10px;animation:floatA 4s ease-in-out infinite;font-size:2.2rem;color:var(--red)}
+.fc1 small{font-family:var(--font-body);font-size:0.6rem;color:var(--ink);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-top:4px}
+.fc2{width:82px;height:108px;background:var(--gold-pale);top:20px;right:-14px;animation:floatB 5s ease-in-out infinite 0.7s;font-size:1.4rem;color:var(--blue)}
+.fc2 small{font-family:var(--font-body);font-size:0.6rem;color:var(--ink);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-top:4px}
+.fc3{width:76px;height:100px;background:var(--green-pale);bottom:30px;left:-20px;animation:floatC 3.8s ease-in-out infinite 1.2s;font-size:1.4rem;color:var(--green)}
+.fc3 small{font-family:var(--font-body);font-size:0.6rem;color:var(--ink);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-top:4px}
+.board-main{background:var(--green);border:4px solid var(--ink);border-radius:20px;padding:28px;aspect-ratio:1/1;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);gap:6px;box-shadow:8px 8px 0 var(--gold);position:relative;z-index:1}
+.cell{border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:1rem;border:2px solid rgba(0,0,0,0.18);transition:transform 0.15s;cursor:default}
+.cell:hover{transform:scale(1.1)}
+.c-g{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.3)}
+.c-w{background:#fff;color:var(--ink)}
+.c-gold{background:var(--gold);color:var(--ink)}
+.c-red{background:var(--red);color:#fff}
+.c-blue{background:var(--blue);color:#fff}
+
+/* sections */
+section{padding:96px 5%}
+.s-inner{max-width:1200px;margin:0 auto}
+.eyebrow{display:inline-block;font-weight:600;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--green);margin-bottom:12px}
+.s-title{font-family:var(--font-display);font-weight:900;font-size:clamp(2rem,4vw,3.2rem);line-height:1.1;letter-spacing:-0.02em;color:var(--ink);margin-bottom:16px}
+.s-title em{font-style:italic;color:var(--red)}
+.s-sub{color:#6B6050;font-size:1rem;line-height:1.75;max-width:560px}
+
+/* why */
+#why{background:var(--cream)}
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:56px;align-items:start}
+.why-big{font-family:var(--font-display);font-weight:900;font-size:clamp(2.2rem,4vw,3.5rem);line-height:1.15;letter-spacing:-0.02em;color:var(--ink);margin-bottom:28px}
+.why-big em{font-style:italic;color:var(--green)}
+.strike{position:relative;display:inline-block;color:#A09585}
+.strike::after{content:'';position:absolute;left:0;top:52%;width:100%;height:3px;background:var(--red);border-radius:2px}
+.stat-row{display:flex;gap:24px;flex-wrap:wrap;margin-top:32px}
+.stat-box{background:var(--ink);color:var(--cream);padding:18px 22px;border-radius:12px}
+.stat-box .n{font-family:var(--font-display);font-weight:900;font-size:2rem;color:var(--gold);line-height:1}
+.stat-box .l{font-size:0.75rem;opacity:0.65;margin-top:4px;text-transform:uppercase;letter-spacing:0.06em}
+.why-pills{display:flex;flex-direction:column;gap:18px}
+.w-pill{display:flex;gap:18px;align-items:flex-start;background:var(--cream2);border-radius:14px;padding:22px 22px;border-left:5px solid var(--green);transition:transform 0.18s}
+.w-pill:hover{transform:translateX(6px)}
+.w-pill.p2{border-color:var(--red)}
+.w-pill.p3{border-color:var(--gold)}
+.w-pill.p4{border-color:var(--blue)}
+.pill-ico{font-size:1.8rem;line-height:1;flex-shrink:0;margin-top:2px}
+.pill-txt h4{font-family:var(--font-display);font-weight:700;font-size:1rem;margin-bottom:5px}
+.pill-txt p{color:#6B6050;font-size:0.88rem;line-height:1.65}
+
+/* games */
+#games{background:var(--ink);position:relative;overflow:hidden}
+#games::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(233,163,25,0.07) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+#games .eyebrow{color:var(--gold)}
+#games .s-title{color:var(--cream)}
+#games .s-sub{color:rgba(253,246,233,0.6)}
+.games-hd{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:48px}
+.games-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.game-card{background:var(--cream);border-radius:var(--card-r);overflow:hidden;border:2.5px solid rgba(253,246,233,0.1);transition:transform 0.2s,box-shadow 0.2s;cursor:default}
+.game-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.gc-top{height:180px;display:flex;align-items:center;justify-content:center;font-size:5rem}
+.bg-green{background:var(--green)}.bg-red{background:var(--red)}.bg-blue{background:var(--blue)}.bg-gold{background:var(--gold)}.bg-ink{background:#2C2C2C}.bg-teal{background:#1B7A78}
+.gc-body{padding:22px 22px 24px}
+.gc-tag{display:inline-block;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;padding:3px 10px;border-radius:4px;margin-bottom:10px}
+.tg{background:var(--green-pale);color:var(--green)}.tr{background:var(--red-pale);color:var(--red)}.tgo{background:var(--gold-pale);color:#7A5500}.tb{background:var(--blue-pale);color:var(--blue)}
+.gc-body h3{font-family:var(--font-display);font-weight:700;font-size:1.15rem;margin-bottom:8px;color:var(--ink);letter-spacing:-0.01em}
+.gc-body p{color:#6B6050;font-size:0.88rem;line-height:1.65}
+.gc-maths{display:inline-flex;align-items:center;gap:5px;margin-top:14px;font-size:0.8rem;font-weight:600;color:var(--green)}
+
+/* activities */
+#activities{background:var(--cream2)}
+.act-layout{display:grid;grid-template-columns:1fr 1.1fr;gap:56px;align-items:center;margin-top:56px}
+.act-promo{background:var(--ink);border-radius:20px;padding:40px 34px;box-shadow:10px 10px 0 var(--gold);position:relative;overflow:hidden}
+.act-promo::after{content:'';position:absolute;bottom:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:rgba(233,163,25,0.07)}
+.act-promo h3{font-family:var(--font-display);font-weight:900;font-size:2rem;color:var(--cream);line-height:1.15;margin-bottom:14px;letter-spacing:-0.02em}
+.act-promo h3 em{color:var(--gold);font-style:italic}
+.act-promo p{color:rgba(253,246,233,0.65);font-size:0.93rem;line-height:1.7;margin-bottom:26px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:6px 14px;border-radius:50px;font-size:0.8rem;font-weight:600;border:1.5px solid}
+.ch-c{border-color:rgba(253,246,233,0.3);color:var(--cream)}
+.ch-g{border-color:var(--gold);color:var(--gold)}
+.act-list{display:flex;flex-direction:column;gap:14px}
+.act-item{display:flex;gap:18px;align-items:flex-start;background:var(--cream);border-radius:14px;padding:20px 20px;border:2px solid var(--cream2);transition:border-color 0.2s,transform 0.18s}
+.act-item:hover{border-color:var(--green-light);transform:translateX(5px)}
+.act-num{font-family:var(--font-display);font-weight:900;font-size:1.8rem;color:var(--cream2);-webkit-text-stroke:2px var(--green);line-height:1;min-width:36px;flex-shrink:0}
+.act-body h4{font-family:var(--font-display);font-weight:700;font-size:1rem;margin-bottom:5px;letter-spacing:-0.01em}
+.act-body p{color:#6B6050;font-size:0.87rem;line-height:1.6}
+
+/* videos */
+#videos-sec{background:var(--cream)}
+.vids-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;flex-wrap:wrap;gap:16px}
+.vids-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.vid-card{border-radius:14px;overflow:hidden;border:2.5px solid var(--cream2);background:var(--cream);transition:transform 0.18s,border-color 0.18s;text-decoration:none;color:inherit;display:block}
+.vid-card:hover{transform:translateY(-4px);border-color:var(--ink)}
+.vid-thumb{aspect-ratio:16/9;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:3.5rem}
+.vbg-g{background:linear-gradient(135deg,var(--green),#1A4535)}
+.vbg-r{background:linear-gradient(135deg,var(--red),#7A2800)}
+.vbg-b{background:linear-gradient(135deg,var(--blue),#0D2E52)}
+.play-btn2{position:absolute;width:52px;height:52px;background:rgba(253,246,233,0.95);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform 0.2s}
+.vid-card:hover .play-btn2{transform:scale(1.15)}
+.play-btn2 svg{width:20px;height:20px;fill:var(--ink);margin-left:3px}
+.vid-badge{position:absolute;top:10px;left:10px;background:var(--gold);color:var(--ink);padding:3px 9px;border-radius:4px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em}
+.vid-info{padding:17px 17px 19px}
+.vid-topic{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:5px}
+.tc-g{color:var(--green)}.tc-r{color:var(--red)}.tc-b{color:var(--blue)}
+.vid-info h3{font-family:var(--font-display);font-weight:700;font-size:0.98rem;line-height:1.35;margin-bottom:5px;color:var(--ink)}
+.vid-info p{color:#6B6050;font-size:0.83rem;line-height:1.55}
+
+/* stories */
+#stories{background:var(--green);position:relative;overflow:hidden}
+#stories::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;background:rgba(255,255,255,0.04)}
+#stories .eyebrow{color:var(--gold)}
+#stories .s-title{color:var(--cream)}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px}
+.testi-card{background:rgba(255,255,255,0.08);border-radius:16px;padding:28px 24px;border:1.5px solid rgba(255,255,255,0.12);transition:background 0.2s,transform 0.18s}
+.testi-card:hover{background:rgba(255,255,255,0.13);transform:translateY(-4px)}
+.tq{font-family:var(--font-display);font-size:3rem;font-weight:900;color:var(--gold);line-height:0.8;margin-bottom:12px}
+.testi-card p{color:rgba(253,246,233,0.85);font-size:0.92rem;line-height:1.72;margin-bottom:20px;font-style:italic}
+.testi-auth{display:flex;align-items:center;gap:12px}
+.tav{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;border:2px solid rgba(255,255,255,0.2);font-family:var(--font-display);font-weight:700;color:#fff;flex-shrink:0}
+.tname{font-weight:600;font-size:0.88rem;color:var(--cream)}
+.trole{font-size:0.78rem;color:rgba(253,246,233,0.5);margin-top:2px}
+
+/* contact */
+#contact{background:var(--cream2)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;margin-top:56px}
+.c-links{display:flex;flex-direction:column;gap:12px;margin-top:24px}
+.c-link{display:flex;align-items:center;gap:16px;background:var(--cream);border-radius:12px;padding:16px 18px;border:2px solid var(--cream2);text-decoration:none;color:var(--ink);font-weight:600;font-size:0.9rem;transition:border-color 0.2s,transform 0.15s,box-shadow 0.15s}
+.c-link:hover{border-color:var(--ink);transform:translateX(5px);box-shadow:-5px 4px 0 var(--gold)}
+.c-icon{width:44px;height:44px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.ci-r{background:var(--red)}.ci-b{background:#1877F2}.ci-g{background:var(--green)}
+.c-link-sub{display:block;font-size:0.76rem;color:#8B7E72;font-weight:400;margin-top:2px}
+.school-box{margin-top:22px;background:var(--ink);border-radius:14px;padding:20px 22px;border-left:5px solid var(--gold)}
+.school-box .lbl{color:var(--gold);font-weight:700;font-size:0.82rem;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:7px}
+.school-box p{color:rgba(253,246,233,0.7);font-size:0.88rem;line-height:1.65}
+.cf{background:var(--ink);border-radius:20px;padding:38px 34px;box-shadow:8px 8px 0 var(--green)}
+.cf h3{font-family:var(--font-display);font-weight:700;font-size:1.5rem;color:var(--cream);margin-bottom:6px}
+.cf-note{color:rgba(253,246,233,0.45);font-size:0.84rem;margin-bottom:26px}
+.fg{margin-bottom:16px}
+.fg label{display:block;font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:rgba(253,246,233,0.65);margin-bottom:6px}
+.fg input,.fg textarea,.fg select{width:100%;padding:11px 14px;border-radius:8px;border:2px solid rgba(253,246,233,0.1);background:rgba(253,246,233,0.06);color:var(--cream);font-family:var(--font-body);font-size:0.93rem;outline:none;transition:border-color 0.2s;-webkit-appearance:none}
+.fg input::placeholder,.fg textarea::placeholder{color:rgba(253,246,233,0.28)}
+.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--gold)}
+.fg select option{background:var(--ink);color:var(--cream)}
+.fg textarea{resize:vertical;min-height:108px}
+.btn-send{width:100%;padding:13px;border-radius:8px;background:var(--gold);color:var(--ink);font-family:var(--font-body);font-weight:700;font-size:1rem;border:none;cursor:pointer;transition:opacity 0.18s,transform 0.15s}
+.btn-send:hover{opacity:0.85;transform:translateY(-2px)}
+#form-ok{display:none;text-align:center;padding:28px;color:var(--gold);font-family:var(--font-display);font-size:1.3rem;font-weight:700;line-height:1.6}
+
+/* footer */
+footer{background:var(--ink);border-top:3px solid var(--gold);padding:44px 5% 28px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px}
+.fl{font-family:var(--font-display);font-weight:900;font-size:1.8rem;color:var(--cream);letter-spacing:-0.02em}
+.fl span{color:var(--gold)}
+footer p{color:rgba(253,246,233,0.42);font-size:0.84rem}
+footer a{color:var(--gold);text-decoration:none}
+.flinks{display:flex;gap:22px;justify-content:center;flex-wrap:wrap}
+.flinks a{color:rgba(253,246,233,0.55);text-decoration:none;font-size:0.84rem;transition:color 0.2s}
+.flinks a:hover{color:var(--gold)}
+
+/* reveal */
+.rev{opacity:0;transform:translateY(28px);transition:opacity 0.6s ease,transform 0.6s ease}
+.rev.in{opacity:1;transform:none}
+
+/* mob menu */
+.mob-menu{position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--ink);z-index:499;display:none;flex-direction:column;align-items:center;justify-content:center;gap:28px}
+.mob-menu.open{display:flex}
+.mob-menu a{color:var(--cream);text-decoration:none;font-family:var(--font-display);font-weight:700;font-size:1.8rem;transition:color 0.2s}
+.mob-menu a:hover{color:var(--gold)}
+
+/* responsive */
+@media(max-width:960px){
+  .hero-inner{grid-template-columns:1fr}
+  .hero-board{display:none}
+  .why-grid,.act-layout,.contact-grid{grid-template-columns:1fr}
+  .games-grid,.vids-grid,.testi-grid{grid-template-columns:1fr 1fr}
+  .nav-links,.nav-yt{display:none}
+  .hamburger{display:flex}
+}
+@media(max-width:600px){
+  .games-grid,.vids-grid,.testi-grid{grid-template-columns:1fr}
+  section{padding:64px 5%}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<div class="mob-menu" id="mob-menu">
+  <a href="#hero" onclick="closeMob()">Home</a>
+  <a href="#why" onclick="closeMob()">Our Approach</a>
+  <a href="#games" onclick="closeMob()">Games</a>
+  <a href="#activities" onclick="closeMob()">Activities</a>
+  <a href="#videos-sec" onclick="closeMob()">Videos</a>
+  <a href="#stories" onclick="closeMob()">Stories</a>
+  <a href="#contact" onclick="closeMob()">Contact</a>
+</div>
+
+<nav>
+  <a href="#hero" class="nav-logo">
+    <span class="nav-logo-pip">M</span>
+    Maths Lab <span style="color:var(--gold);margin-left:4px">SL</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#why">Approach</a></li>
+    <li><a href="#games">Games</a></li>
+    <li><a href="#activities">Activities</a></li>
+    <li><a href="#videos-sec">Videos</a></li>
+    <li><a href="#stories">Stories</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="https://www.youtube.com/@mathslabsrilanka" target="_blank" class="nav-yt">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21.8 8s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.9C17 5 12 5 12 5s-5 0-7 .1c-.4.1-1.2.1-2 .9-.6.6-.8 2-.8 2S2 9.6 2 11.2v1.5c0 1.6.2 3.2.2 3.2s.2 1.4.8 2c.8.8 1.8.8 2.2.9C6.6 19 12 19 12 19s5 0 7-.1c.4-.1 1.2-.1 2-.9.6-.6.8-2 .8-2s.2-1.6.2-3.2v-1.5C22 9.6 21.8 8 21.8 8zM10 15V9l5.5 3-5.5 3z"/></svg>
+    Watch on YouTube
+  </a>
+  <div class="hamburger" id="ham" onclick="toggleMob()"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-dots"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">🇱🇰 Sri Lanka's Practical Maths Lab</div>
+      <h1 class="hero-h1">Maths you<br/><em>play,</em><br/><span class="hg">touch &amp; feel.</span></h1>
+      <p class="hero-desc">We replace textbook drills with card games, board games, and hands-on experiments — so students discover mathematical thinking by living it.</p>
+      <div class="hero-btns">
+        <a href="#why" class="btn-gold">See Our Approach ↓</a>
+        <a href="https://web.facebook.com/mathslabsl" target="_blank" class="btn-outline">Facebook Page</a>
+      </div>
+    </div>
+    <div class="hero-board">
+      <div class="board-wrap">
+        <div class="fc fc1">♠<br/><small>Algebra</small></div>
+        <div class="fc fc2" style="font-size:1.15rem">π≈3.14<br/><small>Geometry</small></div>
+        <div class="fc fc3">∑<br/><small>Series</small></div>
+        <div class="board-main" id="board"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section id="why">
+  <div class="s-inner">
+    <div class="why-grid">
+      <div class="rev">
+        <span class="eyebrow">✦ Our Philosophy</span>
+        <p class="why-big">Ditch the<br/><span class="strike">memorise</span><br/>&amp; <em>understand.</em></p>
+        <p class="s-sub">Traditional maths teaching asks students to memorise and repeat. We believe real understanding comes from experience — when students play a game or run an experiment, maths becomes <strong>inevitable</strong>.</p>
+        <div class="stat-row">
+          <div class="stat-box"><div class="n">100%</div><div class="l">Free Resources</div></div>
+          <div class="stat-box"><div class="n">O/L–A/L</div><div class="l">All Levels</div></div>
+          <div class="stat-box"><div class="n">🎲</div><div class="l">Game-Based</div></div>
+        </div>
+      </div>
+      <div class="why-pills rev" style="transition-delay:0.12s">
+        <div class="w-pill">
+          <div class="pill-ico">🎮</div>
+          <div class="pill-txt"><h4>Games that teach, not just entertain</h4><p>Every game we design has a specific mathematical concept embedded — students absorb the logic through play without noticing.</p></div>
+        </div>
+        <div class="w-pill p2">
+          <div class="pill-ico">🧪</div>
+          <div class="pill-txt"><h4>Experiments over examples</h4><p>When students physically model a probability experiment or build a geometric shape, the concept becomes tangible and permanent.</p></div>
+        </div>
+        <div class="w-pill p3">
+          <div class="pill-ico">💡</div>
+          <div class="pill-txt"><h4>Discovery-led learning</h4><p>We guide students to find patterns themselves — the "aha moment" sticks far longer than any formula on a board.</p></div>
+        </div>
+        <div class="w-pill p4">
+          <div class="pill-ico">🤝</div>
+          <div class="pill-txt"><h4>Built for Sri Lankan students</h4><p>Content designed with the Sri Lankan syllabus in mind, available in Sinhala and English, for O/L and A/L students.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GAMES -->
+<section id="games">
+  <div class="s-inner">
+    <div class="games-hd">
+      <div>
+        <span class="eyebrow">🃏 Game Library</span>
+        <h2 class="s-title" style="color:var(--cream)">Maths <em>through</em> play</h2>
+        <p class="s-sub">Card games, board games and puzzles — each secretly teaching a concept.</p>
+      </div>
+      <a href="https://www.youtube.com/@mathslabsrilanka" target="_blank" class="btn-gold">See All on YouTube →</a>
+    </div>
+    <div class="games-grid" id="games-grid"></div>
+  </div>
+</section>
+
+<!-- ACTIVITIES -->
+<section id="activities">
+  <div class="s-inner">
+    <span class="eyebrow">🔬 Practical Activities</span>
+    <h2 class="s-title">Hands-on. <em>Eyes open.</em></h2>
+    <div class="act-layout">
+      <div class="act-promo rev">
+        <h3>Maths you can <em>touch.</em></h3>
+        <p>From measuring shadows to map-making, building polyhedra to running coin-flip simulations — our activities transform abstract concepts into experiences students never forget.</p>
+        <div class="chips">
+          <span class="chip ch-c">Geometry</span>
+          <span class="chip ch-g">Probability</span>
+          <span class="chip ch-c">Trigonometry</span>
+          <span class="chip ch-c">Statistics</span>
+          <span class="chip ch-g">Algebra</span>
+          <span class="chip ch-c">Number Theory</span>
+          <span class="chip ch-c">Calculus Concepts</span>
+        </div>
+      </div>
+      <div class="act-list">
+        <div class="act-item rev" style="transition-delay:0.05s">
+          <div class="act-num">01</div>
+          <div class="act-body"><h4>Real-world measurement challenges</h4><p>Students measure buildings and slopes using basic tools — applying trigonometry and geometry to genuine problems in their surroundings.</p></div>
+        </div>
+        <div class="act-item rev" style="transition-delay:0.1s">
+          <div class="act-num">02</div>
+          <div class="act-body"><h4>Probability experiments with everyday objects</h4><p>Coins, dice, coloured beads — students run experiments and discover probability rules by watching patterns emerge themselves.</p></div>
+        </div>
+        <div class="act-item rev" style="transition-delay:0.15s">
+          <div class="act-num">03</div>
+          <div class="act-body"><h4>Build &amp; explore geometric solids</h4><p>Constructing nets and folding polyhedra using paper and card brings 3D geometry to life in ways no diagram can match.</p></div>
+        </div>
+        <div class="act-item rev" style="transition-delay:0.2s">
+          <div class="act-num">04</div>
+          <div class="act-body"><h4>Data collection &amp; visual statistics</h4><p>Students gather real data from their classroom or community, visualise it, and draw statistical conclusions — making stats feel relevant.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEOS -->
+<section id="videos-sec">
+  <div class="s-inner">
+    <div class="vids-hd rev">
+      <div>
+        <span class="eyebrow">▶ YouTube Lessons</span>
+        <h2 class="s-title">Watch &amp; <em>learn free</em></h2>
+        <p class="s-sub">Every lesson, game tutorial and activity walkthrough — free on YouTube.</p>
+      </div>
+      <a href="https://www.youtube.com/@mathslabsrilanka" target="_blank" class="btn-gold" style="align-self:center;white-space:nowrap">Full Channel →</a>
+    </div>
+    <div class="vids-grid" id="vids-grid"></div>
+  </div>
+</section>
+
+<!-- STORIES -->
+<section id="stories">
+  <div class="s-inner">
+    <span class="eyebrow">💬 Student Stories</span>
+    <h2 class="s-title">Real students. <em>Real results.</em></h2>
+    <div class="testi-grid" id="testi-grid"></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="s-inner">
+    <span class="eyebrow">✉ Get In Touch</span>
+    <h2 class="s-title">Let's talk <em>maths.</em></h2>
+    <p class="s-sub">Student, parent, or school looking to bring Maths Lab into your classroom — we'd love to hear from you.</p>
+    <div class="contact-grid">
+      <div class="rev">
+        <p style="color:#6B6050;line-height:1.75;margin-bottom:4px">Reach us through any channel below, or send a message directly.</p>
+        <div class="c-links">
+          <a href="https://www.youtube.com/@mathslabsrilanka" target="_blank" class="c-link">
+            <span class="c-icon ci-r"><svg width="21" height="21" viewBox="0 0 24 24" fill="white"><path d="M21.8 8s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.9C17 5 12 5 12 5s-5 0-7 .1c-.4.1-1.2.1-2 .9-.6.6-.8 2-.8 2S2 9.6 2 11.2v1.5c0 1.6.2 3.2.2 3.2s.2 1.4.8 2c.8.8 1.8.8 2.2.9C6.6 19 12 19 12 19s5 0 7-.1c.4-.1 1.2-.1 2-.9.6-.6.8-2 .8-2s.2-1.6.2-3.2v-1.5C22 9.6 21.8 8 21.8 8zM10 15V9l5.5 3-5.5 3z"/></svg></span>
+            <div>YouTube Channel<span class="c-link-sub">@mathslabsrilanka — Subscribe for new lessons</span></div>
+          </a>
+          <a href="https://web.facebook.com/mathslabsl" target="_blank" class="c-link">
+            <span class="c-icon ci-b"><svg width="21" height="21" viewBox="0 0 24 24" fill="white"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></span>
+            <div>Facebook Page<span class="c-link-sub">mathslabsl — Games, activities &amp; updates</span></div>
+          </a>
+        </div>
+        <div class="school-box">
+          <div class="lbl">🏫 For Schools &amp; Teachers</div>
+          <p>Interested in bringing Maths Lab activities into your school? Get in touch and let's explore how we can work together.</p>
+        </div>
+      </div>
+      <div class="cf rev" style="transition-delay:0.12s">
+        <h3>Send a message</h3>
+        <p class="cf-note">We reply to every message.</p>
+        <div id="form-body">
+          <div class="fg"><label>Your Name</label><input type="text" placeholder="Kasun Perera"/></div>
+          <div class="fg"><label>Email Address</label><input type="email" placeholder="you@email.com"/></div>
+          <div class="fg">
+            <label>I am a…</label>
+            <select><option>Student</option><option>Parent</option><option>Teacher</option><option>School Administrator</option><option>Other</option></select>
+          </div>
+          <div class="fg"><label>Message</label><textarea placeholder="Your question, topic request, or how you'd like to collaborate…"></textarea></div>
+          <button class="btn-send" onclick="sendForm()">Send Message →</button>
+        </div>
+        <div id="form-ok">✓ Message sent!<br/><span style="font-family:var(--font-body);font-size:0.88rem;color:rgba(253,246,233,0.5);font-weight:400">We'll be in touch soon.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fl">Maths<span>Lab</span> Sri Lanka</div>
+  <p>Making mathematics something you experience, not just study.</p>
+  <div class="flinks">
+    <a href="#hero">Home</a><a href="#why">Approach</a><a href="#games">Games</a>
+    <a href="#activities">Activities</a>
+    <a href="https://www.youtube.com/@mathslabsrilanka" target="_blank">YouTube</a>
+    <a href="https://web.facebook.com/mathslabsl" target="_blank">Facebook</a>
+  </div>
+  <p>© 2025 Maths Lab Sri Lanka &nbsp;·&nbsp; All resources are free.</p>
+</footer>
+
+<script>
+/* cursor */
+const cur=document.getElementById('cursor');
+document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px'});
+document.querySelectorAll('a,button,.game-card,.vid-card,.act-item,.w-pill').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('big'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('big'));
+});
+
+/* board cells */
+const board=document.getElementById('board');
+const syms=['+²','∑','π','√','∫','÷','×','≈','≥','∞','%','≠'];
+const cls=['c-g','c-w','c-gold','c-red','c-blue'];
+for(let i=0;i<16;i++){
+  const c=document.createElement('div');c.className='cell ';
+  if(i===0||i===15){c.className+='c-gold';c.textContent='★'}
+  else{const r=Math.random();if(r<0.22)c.className+='c-g';else if(r<0.45){c.className+='c-w';c.textContent=syms[~~(Math.random()*syms.length)]}else if(r<0.6){c.className+='c-gold';c.textContent=syms[~~(Math.random()*syms.length)]}else if(r<0.78){c.className+='c-red';c.textContent=syms[~~(Math.random()*syms.length)]}else{c.className+='c-blue';c.textContent=syms[~~(Math.random()*syms.length)]}}
+  board.appendChild(c);
+}
+
+/* games */
+const games=[
+  {ico:'🃏',bg:'bg-green',tag:'tg',tl:'Card Game',title:'Number Battle',desc:'A trick-taking card game where each trick is won by solving a quick mental maths challenge. Builds arithmetic speed and strategic thinking.',maths:'Mental arithmetic · Number sense'},
+  {ico:'🎲',bg:'bg-red',tag:'tr',tl:'Board Game',title:'Fraction Frenzy',desc:'Race around the board collecting fraction cards to reach exactly 1. Players must add, subtract and compare fractions — no calculator allowed.',maths:'Fractions · Addition · Comparison'},
+  {ico:'🧩',bg:'bg-blue',tag:'tgo',tl:'Puzzle Game',title:'Algebra Tiles',desc:'Physical tiles representing variables and constants. Students rearrange them to solve equations — making the algebra process completely visual.',maths:'Algebra · Equations · Variables'},
+  {ico:'🎯',bg:'bg-gold',tag:'tb',tl:'Strategy',title:'Probability Duel',desc:'Two players make predictions, then test them with dice, spinners and cards. Whoever\'s probability estimates are closest wins the round.',maths:'Probability · Statistics · Estimation'},
+  {ico:'♟️',bg:'bg-ink',tag:'tg',tl:'Board Game',title:'Prime Pathways',desc:'A grid game where players can only move to squares sharing a prime factor with their current position. Surprisingly strategic!',maths:'Prime numbers · Factors · Logic'},
+  {ico:'🔢',bg:'bg-teal',tag:'tr',tl:'Card Game',title:'Sequence Snap',desc:'Cards show number sequences with one term missing. Players race to call the missing term — covering arithmetic, geometric and Fibonacci sequences.',maths:'Sequences · Patterns · Series'},
+];
+const gg=document.getElementById('games-grid');
+games.forEach((g,i)=>{gg.innerHTML+=`<div class="game-card rev" style="transition-delay:${i*0.07}s"><div class="gc-top ${g.bg}">${g.ico}</div><div class="gc-body"><span class="gc-tag ${g.tag}">${g.tl}</span><h3>${g.title}</h3><p>${g.desc}</p><div class="gc-maths">📐 ${g.maths}</div></div></div>`;});
+
+/* videos */
+const vids=[
+  {bg:'vbg-g',tc:'tc-g',topic:'Card Game Tutorial',title:'How to play Number Battle',desc:'Full walkthrough of our most popular arithmetic card game — rules, setup and strategy explained.',badge:'Popular'},
+  {bg:'vbg-r',tc:'tc-r',topic:'Practical Activity',title:'Measuring heights with trigonometry',desc:'Students find the height of their school building using just a ruler and the sun. Real trig, zero textbook.',badge:'O/L Trig'},
+  {bg:'vbg-b',tc:'tc-b',topic:'Board Game Lesson',title:'Fraction Frenzy explained',desc:'Learn the rules and the hidden maths behind Fraction Frenzy — perfect for O/L revision.',badge:'Fractions'},
+  {bg:'vbg-g',tc:'tc-g',topic:'Probability Experiment',title:'Coin flips &amp; the law of large numbers',desc:'100 coin flips, live data collection, and a beautiful discovery about probability in practice.',badge:'Statistics'},
+  {bg:'vbg-r',tc:'tc-r',topic:'Puzzle Activity',title:'Algebra tiles — solving equations visually',desc:'Rearranging physical tiles to solve linear equations. The most visual algebra lesson you\'ll ever see.',badge:'Algebra'},
+  {bg:'vbg-b',tc:'tc-b',topic:'Number Theory Game',title:'Prime Pathways — a game about primes',desc:'How to play, and the deep number theory secretly hidden inside this grid movement game.',badge:'A/L Pure'},
+];
+const vg=document.getElementById('vids-grid');
+vids.forEach((v,i)=>{vg.innerHTML+=`<a href="https://www.youtube.com/@mathslabsrilanka" target="_blank" class="vid-card rev" style="transition-delay:${i*0.07}s"><div class="vid-thumb ${v.bg}">🎬<div class="play-btn2"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="vid-badge">${v.badge}</span></div><div class="vid-info"><div class="vid-topic ${v.tc}">${v.topic}</div><h3>${v.title}</h3><p>${v.desc}</p></div></a>`;});
+
+/* testimonials */
+const testis=[
+  {t:'I failed maths twice before finding Maths Lab. After playing Number Battle for a few weeks, mental arithmetic just clicked. Passed O/L with a B.',name:'Dilshan R.',role:'O/L Student, Colombo',av:'D',c:'#C1440E'},
+  {t:'My daughter used to cry before maths homework. Now she asks to play the fraction games on weekends. The change has been unbelievable.',name:'Priyanka S.',role:'Parent, Kandy',av:'P',c:'#1B4F8A'},
+  {t:'I brought Algebra Tiles into my classroom and within one lesson, students who never understood variables were solving equations. Remarkable.',name:'Mr. Jayasinghe',role:'Maths Teacher, Galle',av:'J',c:'#E9A319'},
+  {t:'The probability experiment video is now part of our school curriculum. It makes statistics concrete in a way no textbook can.',name:'Mrs. Fernando',role:'Head of Maths, Negombo',av:'F',c:'#2D6A4F'},
+  {t:'Combined Maths was a nightmare until I found the sequence card game videos. I now actually enjoy the subject. First time ever.',name:'Kavindra P.',role:'A/L Student, Matara',av:'K',c:'#1B7A78'},
+  {t:'The best thing about Maths Lab is that students compete to win games, and in doing so they master the maths without noticing.',name:'Ms. Peris',role:'Teacher, Trincomalee',av:'P',c:'#7B5EA7'},
+];
+const tg=document.getElementById('testi-grid');
+testis.forEach((t,i)=>{tg.innerHTML+=`<div class="testi-card rev" style="transition-delay:${i*0.08}s"><div class="tq">"</div><p>${t.t}</p><div class="testi-auth"><div class="tav" style="background:${t.c}">${t.av}</div><div><div class="tname">${t.name}</div><div class="trole">${t.role}</div></div></div></div>`;});
+
+/* scroll reveal */
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:0.1});
+document.querySelectorAll('.rev').forEach(el=>io.observe(el));
+
+/* mobile nav */
+function toggleMob(){document.getElementById('mob-menu').classList.toggle('open')}
+function closeMob(){document.getElementById('mob-menu').classList.remove('open')}
+
+/* form */
+function sendForm(){document.getElementById('form-body').style.display='none';document.getElementById('form-ok').style.display='block';}
+</script>
+</body>
+</html>
